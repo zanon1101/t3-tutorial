@@ -30,8 +30,8 @@ const CreatePostWizard = () => {
       />
       <input placeholder="Type some emojis!" className="bg-transparent grow outline-none"/>
     </div>
-  )
-}
+  );
+};
 
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
@@ -57,8 +57,7 @@ const PostView = (props: PostWithUser) => {
       </div>
     </div>
   );
-
-}
+};
 
 const Feed = () => {
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
@@ -74,7 +73,7 @@ const Feed = () => {
       ))}
     </div>
   );
-}
+};
 
 const Home: NextPage = () => {
   const { isLoaded: userLoaded, isSignedIn } = useUser();
