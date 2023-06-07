@@ -1,6 +1,5 @@
 import { SignIn, SignInButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
-
 import { type RouterOutputs, api } from "~/utils/api";
 
 import dayjs from "dayjs";
@@ -10,6 +9,7 @@ import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { PageLayout } from "~/components/layout";
 
 dayjs.extend(relativeTime);
 
@@ -39,42 +39,39 @@ const CreatePostWizard = () => {
   if (!user) return null;
 
   return (
-    <div className="flex gap-3 w-full">
+    <div className="flex w-full gap-3">
       <Image
-        src={user.profileImageUrl} 
+        src={user.profileImageUrl}
         alt="Profile image"
         className="h-14 w-14 rounded-full"
         height={56}
         width={56}
-      /> 
-      <input 
+      />
+      <input
         placeholder="Type some emojis!"
-        className="bg-transparent grow outline-none"
+        className="grow bg-transparent outline-none"
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         disabled={isPosting}
         onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              if (input !== "") {
-                mutate({ content: input });
-              }
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (input !== "") {
+              mutate({ content: input });
             }
           }
-        }
+        }}
       />
-      {input !== "" && !isPosting &&
-        <button onClick={() => mutate({ content: input })}>
-          Post
-        </button>
-      }
+      {input !== "" && !isPosting && (
+        <button onClick={() => mutate({ content: input })}>Post</button>
+      )}
 
-      {isPosting && 
-        <div className="flex justify-center items-center">
-          <LoadingSpinner size={20}/>
+      {isPosting && (
+        <div className="flex items-center justify-center">
+          <LoadingSpinner size={20} />
         </div>
-      }
+      )}
     </div>
   );
 };
@@ -95,7 +92,7 @@ const PostView = (props: PostWithUser) => {
       <div className="flex flex-col">
         <div className="flex gap-1 text-slate-300">
           <Link href={`/@${author.username}`}>
-            <span>{`@${author.username}`}</span> 
+            <span>{`@${author.username}`}</span>
           </Link>
           <Link href={`/post/${post.id}`}>
             <span className="font-thin">
@@ -130,26 +127,22 @@ const Home: NextPage = () => {
 
   api.posts.getAll.useQuery();
 
-  if(!userLoaded) return <div />;
-  
-  return (
-    <>
-      <main className="flex h-screen justify-center">
-        <div className="h-full w-full md:max-w-2xl  border-slate-400 border-x">
-        <div className="border-b border-slate-400 p-4">
-          {!isSignedIn && (
-            <div className="flex justify-center">
-              <SignInButton />
-            </div>
-          )}
-          {isSignedIn && <CreatePostWizard />}
-        </div>
+  if (!userLoaded) return <div />;
 
-        <Feed />
-        <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
-        </div>
-      </main>
-    </>
+  return (
+    <PageLayout>
+      <div className="border-b border-slate-400 p-4">
+        {!isSignedIn && (
+          <div className="flex justify-center">
+            <SignInButton />
+          </div>
+        )}
+        {isSignedIn && <CreatePostWizard />}
+      </div>
+
+      <Feed />
+      <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
+    </PageLayout>
   );
 };
 
